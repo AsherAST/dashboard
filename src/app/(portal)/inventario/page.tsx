@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getInventory, getCategories } from "@/lib/products";
-import { parseInventoryParams, buildInventoryUrl } from "@/lib/params";
+import { parseInventoryParams, buildInventoryUrl, buildExportUrl } from "@/lib/params";
 import { formatPrice } from "@/lib/format";
 import { InventoryFilters } from "@/components/InventoryFilters";
 import { StockBadge } from "@/components/StockBadge";
@@ -35,12 +35,34 @@ export default async function InventarioPage({
       pagina: p > 1 ? String(p) : undefined,
     });
 
+  const exportFilters = {
+    q: query.search,
+    categoria: query.category,
+    stock: query.stockState,
+  };
+
   return (
     <div>
       <h1 className="text-xl font-semibold text-neutral-900">Inventario</h1>
-      <p className="mt-1 text-sm text-zinc-500">
-        Productos, stock y alertas.
-      </p>
+      <div className="flex items-center justify-between gap-4">
+        <p className="mt-1 text-sm text-zinc-500">
+          Productos, stock y alertas.
+        </p>
+        <div className="flex gap-2">
+          <a
+            href={buildExportUrl("/api/export/inventario", exportFilters)}
+            className="rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-sm transition-colors hover:border-zinc-500"
+          >
+            Exportar CSV
+          </a>
+          <a
+            href="/api/export/pdf"
+            className="rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-sm transition-colors hover:border-zinc-500"
+          >
+            Exportar PDF
+          </a>
+        </div>
+      </div>
 
       {lowStockCount > 0 && (
         <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">

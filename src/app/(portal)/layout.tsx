@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { LogoutButton } from "@/components/LogoutButton";
 import { NavLink } from "@/components/NavLink";
+import { ReadOnlyBanner } from "@/components/ReadOnlyBanner";
 
 const links = [
   { href: "/inicio", label: "Inicio", icon: "🏠" },
@@ -33,6 +34,12 @@ export default async function PortalLayout({
               {link.label}
             </NavLink>
           ))}
+          {session.user.role === "ADMIN" ? (
+            <NavLink href="/admin">
+              <span className="text-sm">🔑</span>
+              Usuarios
+            </NavLink>
+          ) : null}
         </nav>
         <div className="mt-auto flex flex-col gap-3 border-t border-zinc-200 p-4">
           <div className="flex items-center justify-between text-sm">
@@ -58,7 +65,10 @@ export default async function PortalLayout({
             Dashboard / Sistema de gestión
           </Link>
         </header>
-        <div className="flex-1 p-8">{children}</div>
+        <div className="flex-1 p-8">
+          {session.user.role === "VIEWER" ? <ReadOnlyBanner /> : null}
+          {children}
+        </div>
       </main>
     </div>
   );

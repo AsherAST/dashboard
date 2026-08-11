@@ -12,6 +12,7 @@ export type InventoryQuery = {
   stockState?: StockState;
   sort?: InventorySort;
   page?: number;
+  limit?: number;
 };
 
 export async function getInventory(query: InventoryQuery = {}) {
@@ -51,7 +52,7 @@ export async function getInventory(query: InventoryQuery = {}) {
       where,
       orderBy,
       skip: (page - 1) * INVENTORY_PAGE_SIZE,
-      take: INVENTORY_PAGE_SIZE,
+      take: query.limit ?? INVENTORY_PAGE_SIZE,
     }),
     db.product.count({ where }),
     db.product.count({ where: { stock: { lte: db.product.fields.stockMin } } }),

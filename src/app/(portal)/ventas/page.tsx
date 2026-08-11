@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getOrders } from "@/lib/orders";
-import { parseOrdersParams, buildOrdersUrl } from "@/lib/params";
+import { parseOrdersParams, buildOrdersUrl, buildExportUrl } from "@/lib/params";
 import { formatPrice, formatDate, formatShortId } from "@/lib/format";
 import { OrdersFilters } from "@/components/OrdersFilters";
 import { OrderStatusBadge } from "@/components/OrderStatusBadge";
@@ -30,12 +30,25 @@ export default async function VentasPage({
       pagina: p > 1 ? String(p) : undefined,
     });
 
+  const exportFilters = {
+    q: query.search,
+    estado: query.status,
+  };
+
   return (
     <div>
       <h1 className="text-xl font-semibold text-neutral-900">Ventas</h1>
-      <p className="mt-1 text-sm text-zinc-500">
-        Pedidos y su estado.
-      </p>
+      <div className="flex items-center justify-between gap-4">
+        <p className="mt-1 text-sm text-zinc-500">
+          Pedidos y su estado.
+        </p>
+        <a
+          href={buildExportUrl("/api/export/ventas", exportFilters)}
+          className="rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-sm transition-colors hover:border-zinc-500"
+        >
+          Exportar CSV
+        </a>
+      </div>
 
       <div className="mt-4">
         <OrdersFilters search={query.search} status={query.status} sort={query.sort} />

@@ -11,6 +11,7 @@ export type OrdersQuery = {
   status?: OrderStatus;
   sort?: OrdersSort;
   page?: number;
+  limit?: number;
 };
 
 export async function getOrders(query: OrdersQuery = {}) {
@@ -48,7 +49,7 @@ export async function getOrders(query: OrdersQuery = {}) {
       orderBy,
       include: { _count: { select: { items: true } } },
       skip: (page - 1) * ORDERS_PAGE_SIZE,
-      take: ORDERS_PAGE_SIZE,
+      take: query.limit ?? ORDERS_PAGE_SIZE,
     }),
     db.order.count({ where }),
   ]);

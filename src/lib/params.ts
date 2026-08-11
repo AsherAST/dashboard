@@ -89,4 +89,16 @@ export function buildOrdersUrl(params: Record<string, string | undefined>) {
   return qs ? `/ventas?${qs}` : "/ventas";
 }
 
+export function buildExportUrl(
+  base: string,
+  params: Record<string, string | undefined>,
+) {
+  const url = new URLSearchParams();
+  for (const [key, value] of Object.entries(params)) {
+    if (value) url.set(key, value);
+  }
+  const qs = url.toString();
+  return qs ? `${base}?${qs}` : base;
+}
+
 export type { InventorySort, OrdersSort };
