@@ -1,36 +1,86 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dashboard — Sistema de gestión
 
-## Getting Started
+Panel de administración de inventario y ventas con tablas, gráficas y alertas de stock bajo. Construido con Next.js, Prisma, Recharts y Tailwind CSS.
 
-First, run the development server:
+## Características
+
+- **Dashboard con KPIs**: ingresos, ticket promedio, unidades vendidas, pedidos pendientes y alertas de stock bajo.
+- **Gráficas (Recharts)**: ventas por día (últimos 30 días), ventas por categoría, top productos y pedidos por estado.
+- **Inventario**: tabla de productos con búsqueda (nombre/SKU), filtros por categoría y estado de stock, ordenamiento y paginación. Badge de estado (disponible / stock bajo / agotado).
+- **Ventas**: tabla de pedidos con búsqueda (cliente/correo/ID), filtro por estado y ordenamiento por total/fecha.
+- **Roles**: `ADMIN` y `VIEWER` (solo lectura, con banner de aviso). `/admin` (usuarios) exclusivo de administradores.
+- **Exportación**: CSV del inventario y de las ventas (respeta los filtros activos) y reporte PDF (pdf-lib) con resumen, inventario y últimos pedidos.
+- **Autenticación**: Auth.js v5 con credenciales, rol en JWT y protección de rutas vía middleware.
+
+## Stack
+
+- Next.js 16 (App Router) + TypeScript + Tailwind CSS
+- Prisma 7 + PostgreSQL (Neon)
+- Auth.js v5 (next-auth) con roles en JWT
+- Recharts para gráficas
+- pdf-lib para exportación PDF
+- Zod para validación de filtros
+- Vitest + Testing Library para tests unitarios
+
+## Requisitos
+
+- Node.js 22+
+- Base de datos PostgreSQL (ej. Neon)
+
+## Configuración
+
+1. Clonar el repositorio e instalar dependencias:
+
+   ```bash
+   npm ci
+   ```
+
+2. Crear el archivo `.env.local` (ver `.env.example`):
+
+   ```
+   DATABASE_URL="postgresql://USER:PASSWORD@HOST/dashboard"
+   DATABASE_URL_UNPOOLED="postgresql://USER:PASSWORD@HOST/dashboard?sslmode=require"
+   AUTH_SECRET="generar-con: openssl rand -hex 32"
+   APP_URL="https://dashboard.vercel.app"
+   ```
+
+3. Aplicar migraciones y sembrar datos de ejemplo:
+
+   ```bash
+   npx prisma migrate deploy
+   npx prisma db seed
+   ```
+
+4. Ejecutar en desarrollo:
+
+   ```bash
+   npm run dev
+   ```
+
+## Usuarios de prueba
+
+| Rol     | Email                 | Password      |
+| ------- | --------------------- | ------------- |
+| Admin   | `admin@dashboard.cl`  | `admin1234`   |
+| Viewer  | `viewer@dashboard.cl` | `viewer1234`  |
+
+## Scripts
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev          # desarrollo
+npm run build        # build de producción
+npm run start        # producción
+npm run lint         # eslint
+npm test             # tests unitarios (vitest)
+npm run db:migrate   # prisma migrate dev
+npm run db:seed      # prisma db seed
+npm run db:studio    # prisma studio
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## CI
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+GitHub Actions ejecuta lint, tests, build, migraciones y seed en cada push a `main` y pull request.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deploy
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Desplegado en Vercel con PostgreSQL en Neon.
