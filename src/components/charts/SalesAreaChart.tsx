@@ -19,22 +19,22 @@ export function SalesAreaChart({ data }: { data: SalesByDay[] }) {
       <AreaChart data={data} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
         <defs>
           <linearGradient id="sales" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#18181b" stopOpacity={0.35} />
-            <stop offset="95%" stopColor="#18181b" stopOpacity={0} />
+            <stop offset="0%" stopColor="#6366f1" stopOpacity={0.35} />
+            <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" vertical={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
         <XAxis
           dataKey="date"
           tickFormatter={shortDate}
-          tick={{ fontSize: 11, fill: "#71717a" }}
+          tick={{ fontSize: 11, fill: "#94a3b8" }}
           tickLine={false}
           axisLine={false}
           minTickGap={24}
         />
         <YAxis
           tickFormatter={compactPrice}
-          tick={{ fontSize: 11, fill: "#71717a" }}
+          tick={{ fontSize: 11, fill: "#94a3b8" }}
           tickLine={false}
           axisLine={false}
           width={56}
@@ -43,16 +43,17 @@ export function SalesAreaChart({ data }: { data: SalesByDay[] }) {
           formatter={(value) => formatPrice(Number(value))}
           labelFormatter={(label) => shortDate(String(label))}
           contentStyle={{
-            borderRadius: 8,
-            border: "1px solid #e4e4e7",
+            borderRadius: 10,
+            border: "1px solid #e2e8f0",
+            boxShadow: "0 8px 24px -8px rgb(15 23 42 / 0.15)",
             fontSize: 12,
           }}
         />
         <Area
           type="monotone"
           dataKey="total"
-          stroke="#18181b"
-          strokeWidth={2}
+          stroke="#6366f1"
+          strokeWidth={2.5}
           fill="url(#sales)"
           name="Ventas"
         />

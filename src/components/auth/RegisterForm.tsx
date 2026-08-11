@@ -5,18 +5,21 @@ import { register } from "@/app/actions/auth";
 
 const initialState = undefined;
 
+const inputClass =
+  "rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition-colors placeholder:text-slate-400 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100";
+
 export function RegisterForm() {
   const [state, action, pending] = useActionState(register, initialState);
 
   return (
     <form action={action} className="flex flex-col gap-4">
       {state?.error && (
-        <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">
+        <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {state.error}
         </p>
       )}
       <div className="flex flex-col gap-1">
-        <label htmlFor="name" className="text-sm font-medium">
+        <label htmlFor="name" className="text-sm font-medium text-slate-700">
           Nombre
         </label>
         <input
@@ -25,11 +28,11 @@ export function RegisterForm() {
           type="text"
           required
           autoComplete="name"
-          className="rounded-lg border border-zinc-300 px-3 py-2 outline-none focus:border-zinc-500"
+          className={inputClass}
         />
       </div>
       <div className="flex flex-col gap-1">
-        <label htmlFor="email" className="text-sm font-medium">
+        <label htmlFor="email" className="text-sm font-medium text-slate-700">
           Correo
         </label>
         <input
@@ -38,11 +41,11 @@ export function RegisterForm() {
           type="email"
           required
           autoComplete="email"
-          className="rounded-lg border border-zinc-300 px-3 py-2 outline-none focus:border-zinc-500"
+          className={inputClass}
         />
       </div>
       <div className="flex flex-col gap-1">
-        <label htmlFor="password" className="text-sm font-medium">
+        <label htmlFor="password" className="text-sm font-medium text-slate-700">
           Contraseña
         </label>
         <input
@@ -52,14 +55,14 @@ export function RegisterForm() {
           required
           minLength={8}
           autoComplete="new-password"
-          className="rounded-lg border border-zinc-300 px-3 py-2 outline-none focus:border-zinc-500"
+          className={inputClass}
         />
-        <span className="text-xs text-zinc-400">Mínimo 8 caracteres</span>
+        <span className="text-xs text-slate-400">Mínimo 8 caracteres</span>
       </div>
       <button
         type="submit"
         disabled={pending}
-        className="rounded-lg bg-zinc-900 px-4 py-2 text-white transition-colors hover:bg-zinc-700 disabled:opacity-50"
+        className="rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-500 disabled:opacity-50"
       >
         {pending ? "Creando cuenta…" : "Crear cuenta"}
       </button>

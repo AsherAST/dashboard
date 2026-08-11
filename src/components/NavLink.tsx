@@ -5,9 +5,11 @@ import { usePathname } from "next/navigation";
 
 export function NavLink({
   href,
+  icon: Icon,
   children,
 }: {
   href: string;
+  icon: React.ComponentType<{ className?: string }>;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -16,12 +18,21 @@ export function NavLink({
   return (
     <Link
       href={href}
-      className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+      className={`group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all ${
         active
-          ? "bg-zinc-900 text-white"
-          : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900"
+          ? "bg-white/10 text-white shadow-sm ring-1 ring-inset ring-white/10"
+          : "text-slate-400 hover:bg-white/5 hover:text-white"
       }`}
     >
+      <span
+        className={`flex h-6 w-6 items-center justify-center transition-colors ${
+          active
+            ? "text-indigo-400"
+            : "text-slate-500 group-hover:text-slate-300"
+        }`}
+      >
+        <Icon className="h-[18px] w-[18px]" />
+      </span>
       {children}
     </Link>
   );

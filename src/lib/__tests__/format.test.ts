@@ -23,6 +23,6 @@ describe("orderStatusInfo", () => {
   });
 
   it("devuelve clases de badge", () => {
-    expect(orderStatusInfo("CANCELLED").className).toContain("bg-red-100");
+    expect(orderStatusInfo("CANCELLED").className).toContain("bg-red-50");
   });
 });

@@ -5,6 +5,9 @@ import { formatPrice } from "@/lib/format";
 import { InventoryFilters } from "@/components/InventoryFilters";
 import { StockBadge } from "@/components/StockBadge";
 import { Pagination } from "@/components/Pagination";
+import { PageHeader, ExportButton } from "@/components/PageHeader";
+import { EmptyState } from "@/components/EmptyState";
+import { AlertIcon, DownloadIcon, FileIcon } from "@/components/icons";
 
 export const metadata: Metadata = {
   title: "Inventario | Dashboard",
@@ -43,42 +46,35 @@ export default async function InventarioPage({
 
   return (
     <div>
-      <h1 className="text-xl font-semibold text-neutral-900">Inventario</h1>
-      <div className="flex items-center justify-between gap-4">
-        <p className="mt-1 text-sm text-zinc-500">
-          Productos, stock y alertas.
-        </p>
-        <div className="flex gap-2">
-          <a
-            href={buildExportUrl("/api/export/inventario", exportFilters)}
-            className="rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-sm transition-colors hover:border-zinc-500"
-          >
-            Exportar CSV
-          </a>
-          <a
-            href="/api/export/pdf"
-            className="rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-sm transition-colors hover:border-zinc-500"
-          >
-            Exportar PDF
-          </a>
-        </div>
-      </div>
+      <PageHeader title="Inventario" description="Productos, stock y alertas.">
+        <ExportButton href={buildExportUrl("/api/export/inventario", exportFilters)}>
+          <DownloadIcon className="h-4 w-4 text-slate-400" />
+          Exportar CSV
+        </ExportButton>
+        <ExportButton href="/api/export/pdf">
+          <FileIcon className="h-4 w-4 text-slate-400" />
+          Exportar PDF
+        </ExportButton>
+      </PageHeader>
 
       {lowStockCount > 0 && (
-        <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
-          ⚠️ {lowStockCount}{" "}
-          {lowStockCount === 1 ? "producto tiene" : "productos tienen"} stock
-          igual o menor al mínimo.{" "}
-          <a
-            href={buildInventoryUrl({ stock: "bajo" })}
-            className="font-medium underline"
-          >
-            Ver
-          </a>
+        <div className="mt-6 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          <AlertIcon className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
+          <p>
+            {lowStockCount}{" "}
+            {lowStockCount === 1 ? "producto tiene" : "productos tienen"} stock
+            igual o menor al mínimo.{" "}
+            <a
+              href={buildInventoryUrl({ stock: "bajo" })}
+              className="font-semibold text-amber-700 underline underline-offset-2 hover:text-amber-900"
+            >
+              Ver
+            </a>
+          </p>
         </div>
       )}
 
-      <div className="mt-4">
+      <div className="mt-6">
         <InventoryFilters
           search={query.search}
           category={query.category}
@@ -90,61 +86,70 @@ export default async function InventarioPage({
 
       {items.length > 0 ? (
         <>
-          <p className="mt-5 text-sm text-zinc-500">
-            {total} producto{total !== 1 ? "s" : ""}
+          <p className="mt-5 text-sm text-slate-500">
+            <span className="font-semibold text-slate-700">{total}</span>{" "}
+            producto{total !== 1 ? "s" : ""}
           </p>
-          <div className="mt-3 overflow-x-auto rounded-xl border border-zinc-200 bg-white">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-zinc-200 text-left text-xs uppercase tracking-wide text-zinc-400">
-                  <th className="px-4 py-3 font-medium">SKU</th>
-                  <th className="px-4 py-3 font-medium">Producto</th>
-                  <th className="px-4 py-3 font-medium">Categoría</th>
-                  <th className="px-4 py-3 text-right font-medium">Precio</th>
-                  <th className="px-4 py-3 text-right font-medium">Costo</th>
-                  <th className="px-4 py-3 text-right font-medium">Stock</th>
-                  <th className="px-4 py-3 text-right font-medium">Mínimo</th>
-                  <th className="px-4 py-3 font-medium">Estado</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-100">
-                {items.map((p) => (
-                  <tr key={p.id} className="hover:bg-zinc-50">
-                    <td className="px-4 py-3 font-mono text-xs text-zinc-500">
-                      {p.sku}
-                    </td>
-                    <td className="px-4 py-3 font-medium text-neutral-900">
-                      {p.name}
-                    </td>
-                    <td className="px-4 py-3 text-zinc-600">{p.category}</td>
-                    <td className="px-4 py-3 text-right text-zinc-900">
-                      {formatPrice(p.price)}
-                    </td>
-                    <td className="px-4 py-3 text-right text-zinc-500">
-                      {formatPrice(p.cost)}
-                    </td>
-                    <td className="px-4 py-3 text-right font-medium">
-                      <span className={p.stock === 0 ? "text-red-600" : p.stock <= p.stockMin ? "text-amber-600" : "text-zinc-900"}>
-                        {p.stock}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-right text-zinc-500">
-                      {p.stockMin}
-                    </td>
-                    <td className="px-4 py-3">
-                      <StockBadge stock={p.stock} stockMin={p.stockMin} />
-                    </td>
+          <div className="mt-3 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-200/60">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-slate-200 bg-slate-50 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+                    <th className="px-4 py-3">SKU</th>
+                    <th className="px-4 py-3">Producto</th>
+                    <th className="px-4 py-3">Categoría</th>
+                    <th className="px-4 py-3 text-right">Precio</th>
+                    <th className="px-4 py-3 text-right">Costo</th>
+                    <th className="px-4 py-3 text-right">Stock</th>
+                    <th className="px-4 py-3 text-right">Mínimo</th>
+                    <th className="px-4 py-3">Estado</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {items.map((p) => (
+                    <tr key={p.id} className="transition-colors hover:bg-indigo-50/40">
+                      <td className="px-4 py-3 font-mono text-xs text-slate-500">
+                        {p.sku}
+                      </td>
+                      <td className="px-4 py-3 font-medium text-slate-900">
+                        {p.name}
+                      </td>
+                      <td className="px-4 py-3 text-slate-600">{p.category}</td>
+                      <td className="px-4 py-3 text-right font-medium text-slate-900">
+                        {formatPrice(p.price)}
+                      </td>
+                      <td className="px-4 py-3 text-right text-slate-500">
+                        {formatPrice(p.cost)}
+                      </td>
+                      <td className="px-4 py-3 text-right font-semibold">
+                        <span
+                          className={
+                            p.stock === 0
+                              ? "text-red-600"
+                              : p.stock <= p.stockMin
+                                ? "text-amber-600"
+                                : "text-slate-900"
+                          }
+                        >
+                          {p.stock}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-right text-slate-500">
+                        {p.stockMin}
+                      </td>
+                      <td className="px-4 py-3">
+                        <StockBadge stock={p.stock} stockMin={p.stockMin} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
           <Pagination page={page} totalPages={totalPages} buildHref={paginationLink} />
         </>
       ) : (
-        <p className="mt-12 text-center text-zinc-500">
-          No se encontraron productos con esos filtros.
-        </p>
+        <EmptyState message="No se encontraron productos con esos filtros." />
       )}
     </div>
   );

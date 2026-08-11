@@ -5,6 +5,9 @@ import { formatPrice, formatDate, formatShortId } from "@/lib/format";
 import { OrdersFilters } from "@/components/OrdersFilters";
 import { OrderStatusBadge } from "@/components/OrderStatusBadge";
 import { Pagination } from "@/components/Pagination";
+import { PageHeader, ExportButton } from "@/components/PageHeader";
+import { EmptyState } from "@/components/EmptyState";
+import { DownloadIcon } from "@/components/icons";
 
 export const metadata: Metadata = {
   title: "Ventas | Dashboard",
@@ -37,75 +40,68 @@ export default async function VentasPage({
 
   return (
     <div>
-      <h1 className="text-xl font-semibold text-neutral-900">Ventas</h1>
-      <div className="flex items-center justify-between gap-4">
-        <p className="mt-1 text-sm text-zinc-500">
-          Pedidos y su estado.
-        </p>
-        <a
-          href={buildExportUrl("/api/export/ventas", exportFilters)}
-          className="rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-sm transition-colors hover:border-zinc-500"
-        >
+      <PageHeader title="Ventas" description="Pedidos y su estado.">
+        <ExportButton href={buildExportUrl("/api/export/ventas", exportFilters)}>
+          <DownloadIcon className="h-4 w-4 text-slate-400" />
           Exportar CSV
-        </a>
-      </div>
+        </ExportButton>
+      </PageHeader>
 
-      <div className="mt-4">
+      <div className="mt-6">
         <OrdersFilters search={query.search} status={query.status} sort={query.sort} />
       </div>
 
       {items.length > 0 ? (
         <>
-          <p className="mt-5 text-sm text-zinc-500">
-            {total} pedido{total !== 1 ? "s" : ""}
+          <p className="mt-5 text-sm text-slate-500">
+            <span className="font-semibold text-slate-700">{total}</span>{" "}
+            pedido{total !== 1 ? "s" : ""}
           </p>
-          <div className="mt-3 overflow-x-auto rounded-xl border border-zinc-200 bg-white">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-zinc-200 text-left text-xs uppercase tracking-wide text-zinc-400">
-                  <th className="px-4 py-3 font-medium">Pedido</th>
-                  <th className="px-4 py-3 font-medium">Cliente</th>
-                  <th className="px-4 py-3 font-medium">Estado</th>
-                  <th className="px-4 py-3 text-right font-medium">Ítems</th>
-                  <th className="px-4 py-3 text-right font-medium">Total</th>
-                  <th className="px-4 py-3 font-medium">Fecha</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-100">
-                {items.map((o) => (
-                  <tr key={o.id} className="hover:bg-zinc-50">
-                    <td className="px-4 py-3 font-mono text-xs text-zinc-500">
-                      {formatShortId(o.id)}
-                    </td>
-                    <td className="px-4 py-3">
-                      <p className="font-medium text-neutral-900">
-                        {o.customer}
-                      </p>
-                      <p className="text-xs text-zinc-500">{o.email}</p>
-                    </td>
-                    <td className="px-4 py-3">
-                      <OrderStatusBadge status={o.status} />
-                    </td>
-                    <td className="px-4 py-3 text-right text-zinc-600">
-                      {o._count.items}
-                    </td>
-                    <td className="px-4 py-3 text-right font-medium text-zinc-900">
-                      {formatPrice(o.total)}
-                    </td>
-                    <td className="px-4 py-3 text-zinc-500">
-                      {formatDate(o.createdAt)}
-                    </td>
+          <div className="mt-3 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-200/60">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-slate-200 bg-slate-50 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+                    <th className="px-4 py-3">Pedido</th>
+                    <th className="px-4 py-3">Cliente</th>
+                    <th className="px-4 py-3">Estado</th>
+                    <th className="px-4 py-3 text-right">Ítems</th>
+                    <th className="px-4 py-3 text-right">Total</th>
+                    <th className="px-4 py-3">Fecha</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {items.map((o) => (
+                    <tr key={o.id} className="transition-colors hover:bg-indigo-50/40">
+                      <td className="px-4 py-3 font-mono text-xs text-slate-500">
+                        {formatShortId(o.id)}
+                      </td>
+                      <td className="px-4 py-3">
+                        <p className="font-medium text-slate-900">{o.customer}</p>
+                        <p className="text-xs text-slate-500">{o.email}</p>
+                      </td>
+                      <td className="px-4 py-3">
+                        <OrderStatusBadge status={o.status} />
+                      </td>
+                      <td className="px-4 py-3 text-right text-slate-600">
+                        {o._count.items}
+                      </td>
+                      <td className="px-4 py-3 text-right font-semibold text-slate-900">
+                        {formatPrice(o.total)}
+                      </td>
+                      <td className="px-4 py-3 text-slate-500">
+                        {formatDate(o.createdAt)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
           <Pagination page={page} totalPages={totalPages} buildHref={paginationLink} />
         </>
       ) : (
-        <p className="mt-12 text-center text-zinc-500">
-          No se encontraron pedidos con esos filtros.
-        </p>
+        <EmptyState message="No se encontraron pedidos con esos filtros." />
       )}
     </div>
   );

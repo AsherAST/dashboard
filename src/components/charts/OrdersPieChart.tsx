@@ -29,11 +29,11 @@ export function OrdersPieChart({ data }: { data: StatusCount[] }) {
           nameKey="status"
           innerRadius={50}
           outerRadius={90}
-          paddingAngle={2}
+          paddingAngle={3}
           strokeWidth={2}
         >
           {data.map((entry) => (
-            <Cell key={entry.status} fill={COLORS[entry.status] ?? "#18181b"} />
+            <Cell key={entry.status} fill={COLORS[entry.status] ?? "#6366f1"} />
           ))}
         </Pie>
         <Tooltip
@@ -43,7 +43,12 @@ export function OrdersPieChart({ data }: { data: StatusCount[] }) {
               (entry?.payload as { status?: string } | undefined)?.status ?? "",
             ).label,
           ]}
-          contentStyle={{ borderRadius: 8, border: "1px solid #e4e4e7", fontSize: 12 }}
+          contentStyle={{
+            borderRadius: 10,
+            border: "1px solid #e2e8f0",
+            boxShadow: "0 8px 24px -8px rgb(15 23 42 / 0.15)",
+            fontSize: 12,
+          }}
         />
         <Legend
           formatter={(value: string) => orderStatusInfo(value).label}

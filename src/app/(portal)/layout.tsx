@@ -4,12 +4,20 @@ import { auth } from "@/auth";
 import { LogoutButton } from "@/components/LogoutButton";
 import { NavLink } from "@/components/NavLink";
 import { ReadOnlyBanner } from "@/components/ReadOnlyBanner";
+import {
+  BoxIcon,
+  CartIcon,
+  HomeIcon,
+  SparkIcon,
+  UserIcon,
+  UsersIcon,
+} from "@/components/icons";
 
 const links = [
-  { href: "/inicio", label: "Inicio", icon: "🏠" },
-  { href: "/inventario", label: "Inventario", icon: "📦" },
-  { href: "/ventas", label: "Ventas", icon: "🛒" },
-  { href: "/cuenta", label: "Mi cuenta", icon: "👤" },
+  { href: "/inicio", label: "Inicio", icon: HomeIcon },
+  { href: "/inventario", label: "Inventario", icon: BoxIcon },
+  { href: "/ventas", label: "Ventas", icon: CartIcon },
+  { href: "/cuenta", label: "Mi cuenta", icon: UserIcon },
 ];
 
 export default async function PortalLayout({
@@ -21,50 +29,91 @@ export default async function PortalLayout({
   if (!session?.user) redirect("/login");
 
   return (
-    <div className="flex min-h-screen">
-      <aside className="flex w-60 shrink-0 flex-col border-r border-zinc-200 bg-white">
-        <div className="border-b border-zinc-200 px-5 py-4">
-          <p className="font-semibold text-neutral-900">Panel de gestión</p>
-          <p className="text-xs text-zinc-400">Inventario y ventas</p>
+    <div className="flex min-h-screen bg-slate-50">
+      <aside className="fixed inset-y-0 left-0 z-20 flex w-64 shrink-0 flex-col bg-slate-900">
+        <div className="flex items-center gap-3 px-5 py-5">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-900/40">
+            <SparkIcon />
+          </div>
+          <div>
+            <p className="text-sm font-semibold tracking-tight text-white">
+              Panel de gestión
+            </p>
+            <p className="text-xs text-slate-400">Inventario y ventas</p>
+          </div>
         </div>
-        <nav className="flex flex-col gap-1 p-3">
+
+        <nav className="mt-2 flex flex-col gap-1 px-3">
+          <p className="px-3 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+            Menú
+          </p>
           {links.map((link) => (
-            <NavLink key={link.href} href={link.href}>
-              <span className="text-sm">{link.icon}</span>
+            <NavLink key={link.href} href={link.href} icon={link.icon}>
               {link.label}
             </NavLink>
           ))}
           {session.user.role === "ADMIN" ? (
-            <NavLink href="/admin">
-              <span className="text-sm">🔑</span>
-              Usuarios
-            </NavLink>
+            <>
+              <p className="px-3 pb-1 pt-4 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                Administración
+              </p>
+              <NavLink href="/admin" icon={UsersIcon}>
+                Usuarios
+              </NavLink>
+            </>
           ) : null}
         </nav>
-        <div className="mt-auto flex flex-col gap-3 border-t border-zinc-200 p-4">
-          <div className="flex items-center justify-between text-sm">
-            <span className="truncate text-zinc-500">
-              {session.user.name}
-            </span>
-            <span
-              className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+
+        <div className="mt-auto border-t border-slate-800 p-4">
+          <div className="flex items-center gap-3 rounded-xl bg-slate-800/60 p-3">
+            <div
+              className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white ${
                 session.user.role === "ADMIN"
-                  ? "bg-zinc-900 text-white"
-                  : "bg-zinc-100 text-zinc-700"
+                  ? "bg-gradient-to-br from-indigo-500 to-violet-600"
+                  : "bg-gradient-to-br from-sky-500 to-emerald-500"
               }`}
             >
-              {session.user.role === "ADMIN" ? "ADMIN" : "VIEWER"}
-            </span>
+              {(session.user.name ?? "U").slice(0, 1).toUpperCase()}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium text-white">
+                {session.user.name}
+              </p>
+              <p className="truncate text-xs text-slate-400">
+                {session.user.email}
+              </p>
+            </div>
           </div>
-          <LogoutButton />
+          <div className="mt-3">
+            <LogoutButton />
+          </div>
         </div>
       </aside>
-      <main className="flex flex-1 flex-col">
-        <header className="border-b border-zinc-200 bg-white px-8 py-4">
-          <Link href="/inicio" className="text-sm font-medium text-zinc-700">
-            Dashboard / Sistema de gestión
-          </Link>
+
+      <main className="ml-64 flex flex-1 flex-col">
+        <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur">
+          <div className="flex items-center justify-between px-8 py-4">
+            <div>
+              <p className="text-xs text-slate-400">Panel / Sistema de gestión</p>
+              <Link
+                href="/inicio"
+                className="text-sm font-medium text-slate-700 hover:text-slate-900"
+              >
+                Dashboard
+              </Link>
+            </div>
+            <span
+              className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                session.user.role === "ADMIN"
+                  ? "bg-indigo-50 text-indigo-700 ring-1 ring-inset ring-indigo-200"
+                  : "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-200"
+              }`}
+            >
+              {session.user.role === "ADMIN" ? "Administrador" : "Solo lectura"}
+            </span>
+          </div>
         </header>
+
         <div className="flex-1 p-8">
           {session.user.role === "VIEWER" ? <ReadOnlyBanner /> : null}
           {children}
