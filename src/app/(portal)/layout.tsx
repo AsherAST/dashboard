@@ -4,20 +4,13 @@ import { auth } from "@/auth";
 import { LogoutButton } from "@/components/LogoutButton";
 import { NavLink } from "@/components/NavLink";
 import { ReadOnlyBanner } from "@/components/ReadOnlyBanner";
-import {
-  BoxIcon,
-  CartIcon,
-  HomeIcon,
-  SparkIcon,
-  UserIcon,
-  UsersIcon,
-} from "@/components/icons";
+import { SparkIcon } from "@/components/icons";
 
 const links = [
-  { href: "/inicio", label: "Inicio", icon: HomeIcon },
-  { href: "/inventario", label: "Inventario", icon: BoxIcon },
-  { href: "/ventas", label: "Ventas", icon: CartIcon },
-  { href: "/cuenta", label: "Mi cuenta", icon: UserIcon },
+  { href: "/inicio", label: "Inicio", icon: "home" },
+  { href: "/inventario", label: "Inventario", icon: "box" },
+  { href: "/ventas", label: "Ventas", icon: "cart" },
+  { href: "/cuenta", label: "Mi cuenta", icon: "user" },
 ];
 
 export default async function PortalLayout({
@@ -57,7 +50,7 @@ export default async function PortalLayout({
               <p className="px-3 pb-1 pt-4 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                 Administración
               </p>
-              <NavLink href="/admin" icon={UsersIcon}>
+              <NavLink href="/admin" icon="users">
                 Usuarios
               </NavLink>
             </>

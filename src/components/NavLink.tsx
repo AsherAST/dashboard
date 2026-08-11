@@ -2,18 +2,36 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  BoxIcon,
+  CartIcon,
+  HomeIcon,
+  ShieldIcon,
+  UserIcon,
+  UsersIcon,
+} from "@/components/icons";
+
+const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  home: HomeIcon,
+  box: BoxIcon,
+  cart: CartIcon,
+  user: UserIcon,
+  users: UsersIcon,
+  shield: ShieldIcon,
+};
 
 export function NavLink({
   href,
-  icon: Icon,
+  icon,
   children,
 }: {
   href: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: keyof typeof ICONS;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
   const active = pathname === href || pathname.startsWith(`${href}/`);
+  const Icon = ICONS[icon] ?? HomeIcon;
 
   return (
     <Link
